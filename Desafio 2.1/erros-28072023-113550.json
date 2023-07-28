@@ -1,0 +1,32 @@
+[
+  {
+    "dados": {
+      "nome": "Fernanda Pinheiro",
+      "cpf": "30228380006",
+      "dt_nascimento": "04121972",
+      "renda_mensal": "-5850.27",
+      "estado_civil": "C"
+    },
+    "erros": [
+      {
+        "campo": "renda_mensal",
+        "mensagem": "Formato inválido de renda mensal."
+      }
+    ]
+  },
+  {
+    "dados": {
+      "nome": "Carlos Roberto",
+      "cpf": "18493838047",
+      "dt_nascimento": "14091966",
+      "renda_mensal": "8387.92",
+      "estado_civil": "X"
+    },
+    "erros": [
+      {
+        "campo": "estado_civil",
+        "mensagem": "Estado civil inválido."
+      }
+    ]
+  }
+]

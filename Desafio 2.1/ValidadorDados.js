@@ -3,7 +3,7 @@
 
 const { DateTime } = require('luxon');
 
-class ValidadorDados {
+validadorDados = class ValidadorDados {
     static validarNome(nome) {
         return nome.length >= 5 && nome.length <= 60;
     }
@@ -69,4 +69,4 @@ class ValidadorDados {
     }
 }
 
-module.exports = ValidadorDados;
+module.exports = validadorDados;

@@ -6,7 +6,7 @@ const fs = require('fs');
 const { DateTime } = require('luxon');
 const path = require('path');
 
-class GeradorArquivoErro {
+geradorArquivoErro = class GeradorArquivoErro {
   // Gera um arquivo de erros no formato JSON com base nos erros de validação encontrados.
   static gerarArquivoErro(arquivoSaida, erros) {
     // Obtém o timestamp atual no formato 'ddMMyyyy-HHmmss'.
@@ -38,4 +38,4 @@ class GeradorArquivoErro {
   }
 }
 
-module.exports = GeradorArquivoErro;
+module.exports = geradorArquivoErro;

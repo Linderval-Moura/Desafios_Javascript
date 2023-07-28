@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 
-class LeitorArquivo {
+leitorArquivo = class LeitorArquivo {
   static lerArquivoJSON(caminhoArquivo) {
     try {
       // Lê conteúdo de um arquivo no formato UTF-8
@@ -19,5 +19,5 @@ class LeitorArquivo {
   }
 }
 
-module.exports = LeitorArquivo;
+module.exports = leitorArquivo;
   
