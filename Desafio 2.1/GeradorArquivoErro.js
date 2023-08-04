@@ -2,6 +2,7 @@
   no formato especificado com os erros encontrados 
   durante a validação.*/
 
+// Importação de módulos:
 const fs = require('fs');
 const { DateTime } = require('luxon');
 const path = require('path');
