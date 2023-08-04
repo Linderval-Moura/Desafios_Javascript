@@ -20,6 +20,7 @@ async function executarConversor(): Promise<void> {
   console.log('Conversor de Moedas');
   console.log('-------------------');
 
+  // Solicita a moeda de origem
   while (true) {
     const moedaOrigem = readlineSync.question('Moeda origem: ');
     if (!moedaOrigem) {
@@ -49,12 +50,16 @@ async function executarConversor(): Promise<void> {
       const { result, info } = await conversor.converterMoeda(moedaOrigem, moedaDestino, valor);
       exibirResultado(moedaOrigem, moedaDestino, valor, result, info.rate);
     } catch (error: any) {
-      if (error.message) {
-        exibirErro('Erro na conversão: ' + error.message);
-      } else if (error.request) {
-        exibirErro('Erro na comunicação com a API: ' + error.message);
-      } else {
-        exibirErro('Erro desconhecido: ' + error.message);
+      switch (true) {
+        case Boolean(error.message):
+          exibirErro('Erro na conversão: ' + error.message);
+          break;
+        case Boolean(error.request):
+          exibirErro('Erro na comunicação com a API: ' + error.message);
+          break;
+        default:
+          exibirErro('Erro desconhecido: ' + error.message);
+          break;
       }
     }
   }

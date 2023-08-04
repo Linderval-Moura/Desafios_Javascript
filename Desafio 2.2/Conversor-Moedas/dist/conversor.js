@@ -30,6 +30,7 @@ function executarConversor() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log('Conversor de Moedas');
         console.log('-------------------');
+        // Solicita a moeda de origem
         while (true) {
             const moedaOrigem = readline_sync_1.default.question('Moeda origem: ');
             if (!moedaOrigem) {
@@ -56,14 +57,16 @@ function executarConversor() {
                 exibirResultado(moedaOrigem, moedaDestino, valor, result, info.rate);
             }
             catch (error) {
-                if (error.message) {
-                    exibirErro('Erro na conversão: ' + error.message);
-                }
-                else if (error.request) {
-                    exibirErro('Erro na comunicação com a API: ' + error.message);
-                }
-                else {
-                    exibirErro('Erro desconhecido: ' + error.message);
+                switch (true) {
+                    case Boolean(error.message):
+                        exibirErro('Erro na conversão: ' + error.message);
+                        break;
+                    case Boolean(error.request):
+                        exibirErro('Erro na comunicação com a API: ' + error.message);
+                        break;
+                    default:
+                        exibirErro('Erro desconhecido: ' + error.message);
+                        break;
                 }
             }
         }
