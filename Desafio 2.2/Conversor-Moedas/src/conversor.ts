@@ -1,4 +1,4 @@
-// conversor.ts
+// Aplicação Conversor
 
 import { ValidadorMoeda } from './auxilios/ValidadorMoeda';
 import { ConversorMoeda } from './api/ConversorMoeda';
