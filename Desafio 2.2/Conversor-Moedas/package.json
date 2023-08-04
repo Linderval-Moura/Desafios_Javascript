@@ -1,0 +1,19 @@
+{
+  "name": "conversor-moedas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/readline-sync": "^1.4.4",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
