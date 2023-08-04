@@ -14,12 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConversorMoeda = void 0;
 const axios_1 = __importDefault(require("axios"));
+// classe para realizar a conversão de valores entre moedas
 class ConversorMoeda {
     constructor() {
         this.baseUrl = 'https://api.exchangerate.host';
     }
+    // Método que realiza a conversão
     converterMoeda(origem, destino, valor) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Requisição HTTP usando o método GET
             const response = yield axios_1.default.get(`${this.baseUrl}/convert?from=${origem}&to=${destino}&amount=${valor}`);
             return response.data;
         });
