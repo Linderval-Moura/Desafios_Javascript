@@ -1,5 +1,5 @@
 const prompt = require("prompt-sync")({ sigint: true });
-const sequelize = require('./sequelize');
+const sequelize = require('./config/sequelize');
 // Importa as classes externas GerenciaPaciente e GerenciaConsulta
 const GerenciaPaciente = require('./gerenciaPaciente');
 const GerenciaConsulta = require('./gerenciaConsulta');
@@ -13,7 +13,7 @@ class Consultorio {
   }
 
   // Método responsável pelo menu principal do sistema
-  menuPrincipal() {
+  async menuPrincipal() {
     console.log('Menu Principal');
     console.log('1 - Cadastro de pacientes');
     console.log('2 - Agenda');
@@ -22,25 +22,29 @@ class Consultorio {
     console.log('');
 
     // Verifica a opção escolhida e chama o método correspondente
-    switch (opcao) {
-      case '1':
-        this.menuCadastroPacientes();
-        break;
-      case '2':
-        this.menuAgenda();
-        break;
-      case '3':
-        console.log('Encerrando o programa...');
-        break;
-      default:
-        console.log('Opção inválida. Por favor, escolha uma opção válida.\n');
-        this.menuPrincipal();
-        break;
+    try {
+      switch (opcao) {
+        case '1':
+          await this.menuCadastroPacientes();
+          break;
+        case '2':
+          await this.menuAgenda();
+          break;
+        case '3':
+          console.log('Encerrando o programa...');
+          break;
+        default:
+          console.log('Opção inválida. Por favor, escolha uma opção válida.\n');
+          await this.menuPrincipal();
+          break;
+      }
+    } catch (error) {
+      console.error('Erro no menu principal:', error);
     }
   }
 
   // Método responsável pelo menu de cadastro de pacientes
-  menuCadastroPacientes() {
+  async menuCadastroPacientes() {
     console.log('Menu do Cadastro de Pacientes');
     console.log('1 - Cadastrar novo paciente');
     console.log('2 - Excluir paciente');
@@ -51,31 +55,35 @@ class Consultorio {
     console.log('');
 
     // Verifica a opção escolhida e chama o método correspondente
-    switch (opcao) {
-      case '1':
-        this.gerenciaPaciente.cadastrarPaciente();
-        break;
-      case '2':
-        this.excluirPaciente();
-        break;
-      case '3':
-        this.listarPacientes('cpf');
-        break;
-      case '4':
-        this.listarPacientes('nome');
-        break;
-      case '5':
-        this.menuPrincipal();
-        break;
-      default:
-        console.log('Opção inválida. Por favor, escolha uma opção válida.\n');
-        this.menuCadastroPacientes();
-        break;
+    try {
+      switch (opcao) {
+        case '1':
+          await this.gerenciaPaciente.cadastrarPaciente();
+          break;
+        case '2':
+          await this.excluirPaciente();
+          break;
+        case '3':
+          await this.listarPacientes('cpf');
+          break;
+        case '4':
+          await this.listarPacientes('nome');
+          break;
+        case '5':
+          await this.menuPrincipal();
+          break;
+        default:
+          console.log('Opção inválida. Por favor, escolha uma opção válida.\n');
+          await this.menuCadastroPacientes();
+          break;
+      }
+    } catch (error) {
+      console.error('Erro no menu de cadastro de pacientes:', error);
     }
   }
 
   // Método responsável pelo menu de agenda
-  menuAgenda() {
+  async menuAgenda() {
     console.log('Agenda');
     console.log('1 - Agendar consulta');
     console.log('2 - Cancelar agendamento');
@@ -84,32 +92,43 @@ class Consultorio {
     const opcao = prompt('Escolha uma opção: ');
 
     // Verifica a opção escolhida e chama o método correspondente
-    switch (opcao) {
-      case '1':
-        this.agendarConsulta();
-        break;
-      case '2':
-        this.cancelarAgendamento();
-        break;
-      case '3':
-        this.listarAgenda();
-        break;
-      case '4':
-        this.menuPrincipal();
-        break;
-      default:
-        console.log('Opção inválida. Tente novamente.\n');
-        this.menuAgenda();
+    try {
+      switch (opcao) {
+        case '1':
+          await this.agendarConsulta();
+          break;
+        case '2':
+          await this.cancelarAgendamento();
+          break;
+        case '3':
+          await this.listarAgenda();
+          break;
+        case '4':
+          await this.menuPrincipal();
+          break;
+        default:
+          console.log('Opção inválida. Tente novamente.\n');
+          await this.menuAgenda();
+      }
+    } catch (error) {
+      console.error('Erro no menu de agenda:', error);
     }
   }
 
   // Método responsável por iniciar o sistema do consultório
-  iniciar() {
+  async iniciar() {
     console.log('Bem-vindo(a) ao sistema de agendamento de consultório odontológico!\n');
-    this.menuPrincipal();
+    await this.menuPrincipal();
   }
 }
 
 // Cria uma instância da classe Consultorio e inicia o sistema
-consultorio = new Consultorio();
-consultorio.iniciar();
+(async () => {
+  try {
+    await sequelize.sync();
+    const consultorio = new Consultorio();
+    await consultorio.iniciar();
+  } catch (error) {
+    console.error('Erro ao sincronizar o banco de dados:', error);
+  }
+})();
