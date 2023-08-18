@@ -1,8 +1,6 @@
 const prompt = require("prompt-sync")({ sigint: true });
-// Importa as classe Paciente e GerenciaConsulta
-const Paciente = require('./paciente')
-const Paciente = require('./models/paciente'); // Modelo Paciente do Sequelize
-const GerenciaConsulta = require('./gerenciaConsulta')
+// Modelo Paciente do Sequelize
+const Paciente = require('./models/paciente'); 
 
 class GerenciaPaciente {
   constructor(sequelize) {
@@ -63,58 +61,68 @@ class GerenciaPaciente {
       this.cadastrarPaciente();
     }
   }
-  }
 
   async excluirPaciente(cpf) {
     console.log('Excluir paciente');
     cpf = prompt('Digite o CPF do paciente: ');
     paciente = this.encontrarPaciente(cpf);
 
-    // Verifica se o paciente foi encontrado
-    if (!paciente) {
-      console.log('Não foi encontrado um paciente com esse CPF: ${cpf}.\n'+ cpf);
-      this.excluirPaciente();
-      return;
-    }
-
-    const consultaAgendada = this.encontrarConsultaAgendada(paciente.cpf);
-    if (consultaAgendada) {
-      console.log('O paciente possui uma consulta agendada. Não é possível excluí-lo.\n');
-      this.mostrarMenuCadastroPacientes();
-      return;
-    }
-
-    // Remove o paciente da lista de pacientes
-    this.pacientes = this.pacientes.filter((p) => p.cpf !== paciente.cpf);
-    // this.consultas = this.consultas.filter((c) => c.paciente.cpf !== cpf);
-    console.log('Paciente excluído com sucesso!\n');
-    this.mostrarMenuCadastroPacientes();
-  }
-
-  listarPacientes(ordem) {
-    console.log('Listagem de Pacientes');
-    console.log('------------------------------------------------------------');
-    console.log('CPF       Nome                                     Dt.Nasc. Idade');
-    console.log('------------------------------------------------------------');
-
-    let pacientesOrdenados;
-    if (ordem === 'cpf') {
-      pacientesOrdenados = this.pacientes.slice().sort((a, b) => a.cpf.localeCompare(b.cpf));
-    } else if (ordem === 'nome') {
-      pacientesOrdenados = this.pacientes.slice().sort((a, b) => a.nome.localeCompare(b.nome));
-    } 
-    
-    pacientesOrdenados.forEach((paciente) => {
-      console.log(`${paciente.cpf.padEnd(14)} ${paciente.nome.padEnd(30)} ${paciente.dataNascimento}  ${this.calcularIdade(paciente.dataNascimento)}`);
-      const consultaFutura = this.encontrarConsultaAgendada(paciente.cpf);
-      if (consultaFutura) {
-        console.log(`Agendado para: ${consultaFutura.data}`);
-        console.log(`${consultaFutura.horaInicial} às ${consultaFutura.horaFinal}\n`);
+    try {
+      // Encontra o paciente pelo CPF
+      const paciente = await this.Paciente.findOne({ where: { cpf } });
+      // Verifica se o paciente foi encontrado
+      if (!paciente) {
+        console.log(`Não foi encontrado um paciente com o CPF ${cpf}.\n`);
+        this.excluirPaciente();
+        return;
       }
-    });
-    console.log('------------------------------------------------------------\n');
-    this.menuCadastroPacientes();
+
+      const consultaAgendada = this.encontrarConsultaAgendada(paciente.cpf);
+      if (consultaAgendada) {
+        console.log('O paciente possui uma consulta agendada. Não é possível excluí-lo.\n');
+        this.mostrarMenuCadastroPacientes();
+        return;
+      }
+
+      // Remove o paciente do banco de dados
+      await paciente.destroy();
+      console.log('Paciente excluído com sucesso!\n');
+      this.mostrarMenuCadastroPacientes();
+    } catch (error) {
+      console.error('Erro ao excluir paciente:', error);
+      this.mostrarMenuCadastroPacientes();
+    }
   }
+
+  async listarPacientes(ordem) {
+    try {
+      console.log('Listagem de Pacientes');
+      console.log('------------------------------------------------------------');
+      console.log('CPF       Nome                                     Dt.Nasc. Idade');
+      console.log('------------------------------------------------------------');
+
+      let pacientesOrdenados;
+      if (ordem === 'cpf') {
+        pacientesOrdenados = this.pacientes.slice().sort((a, b) => a.cpf.localeCompare(b.cpf));
+      } else if (ordem === 'nome') {
+        pacientesOrdenados = this.pacientes.slice().sort((a, b) => a.nome.localeCompare(b.nome));
+      } 
+      
+      pacientesOrdenados.forEach((paciente) => {
+        console.log(`${paciente.cpf.padEnd(14)} ${paciente.nome.padEnd(30)} ${paciente.dataNascimento}  ${this.calcularIdade(paciente.dataNascimento)}`);
+        const consultaFutura = this.encontrarConsultaAgendada(paciente.cpf);
+        if (consultaFutura) {
+          console.log(`Agendado para: ${consultaFutura.data}`);
+          console.log(`${consultaFutura.horaInicial} às ${consultaFutura.horaFinal}\n`);
+        }
+      });
+      console.log('------------------------------------------------------------\n');
+      this.menuCadastroPacientes();
+    } catch (error) {
+      console.error('Erro ao listar pacientes:', error);
+      this.menuCadastroPacientes();
+    }
+  };
 
   validarCPF(cpf) {
   // Verificar se possui 11 dígitos

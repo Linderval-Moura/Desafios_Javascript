@@ -12,6 +12,10 @@
   "dependencies": {
     "fs": "^0.0.1-security",
     "luxon": "^3.3.0",
-    "prompt-sync": "^4.2.0"
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "prompt-sync": "^4.2.0",
+    "sequelize": "^6.32.1",
+    "sequelize-cli": "^6.6.1"
   }
 }
