@@ -1,5 +1,6 @@
 const prompt = require("prompt-sync")({ sigint: true });
 const sequelize = require('./config/sequelize');
+
 // Importa as classes externas GerenciaPaciente e GerenciaConsulta
 const GerenciaPaciente = require('./gerenciaPaciente');
 const GerenciaConsulta = require('./gerenciaConsulta');
