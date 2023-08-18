@@ -1,4 +1,5 @@
 const prompt = require("prompt-sync")({ sigint: true });
+const sequelize = require('./sequelize');
 // Importa as classes externas GerenciaPaciente e GerenciaConsulta
 const GerenciaPaciente = require('./gerenciaPaciente');
 const GerenciaConsulta = require('./gerenciaConsulta');
@@ -7,8 +8,8 @@ const GerenciaConsulta = require('./gerenciaConsulta');
 class Consultorio {
   constructor() {
     // Cria instâncias das classes GerenciaPaciente e GerenciaConsulta
-    this.gerenciaPaciente = new GerenciaPaciente();
-    this.gerenciaConsulta = new GerenciaConsulta();
+    this.gerenciaPaciente = new GerenciaPaciente(sequelize);
+    this.gerenciaConsulta = new GerenciaConsulta(sequelize);
   }
 
   // Método responsável pelo menu principal do sistema
