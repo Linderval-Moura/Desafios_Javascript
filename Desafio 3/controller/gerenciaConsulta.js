@@ -1,7 +1,7 @@
 const prompt = require("prompt-sync")({ sigint: true });
 const { Op } = require('sequelize');
 // Importe do modelo Consulta do Sequelize
-const Consulta = require('./models/consulta'); 
+const Consulta = require('../models/consulta'); 
 
 
 class GerenciaConsulta {

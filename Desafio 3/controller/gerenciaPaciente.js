@@ -1,6 +1,6 @@
 const prompt = require("prompt-sync")({ sigint: true });
 // Modelo Paciente do Sequelize
-const Paciente = require('./models/paciente'); 
+const Paciente = require('../models/paciente'); 
 
 class GerenciaPaciente {
   constructor(sequelize) {
@@ -19,6 +19,7 @@ class GerenciaPaciente {
       this.cadastrarPaciente();
       return;
     } 
+    
 
     // Verifica se o CPF é válido
     if (!this.validarCPF(cpf)) {
