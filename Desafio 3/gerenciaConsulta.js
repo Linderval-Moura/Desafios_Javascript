@@ -182,15 +182,15 @@ class GerenciaConsulta {
     }
   }
 
-  validarData(data) {
+  async validarData(data) {
     return true;
   }
 
-  validarHora(hora) {
+  async validarHora(hora) {
     return true;
   }
 
-  validarPeriodoConsulta(data, horaInicial, horaFinal) {
+  async validarPeriodoConsulta(data, horaInicial, horaFinal) {
     return true;
   }
 
@@ -252,7 +252,7 @@ class GerenciaConsulta {
     }
   }
 
-  compararDatas(data1, data2) {
+  async compararDatas(data1, data2) {
     const [dia1, mes1, ano1] = data1.split('/').map(Number);
     const [dia2, mes2, ano2] = data2.split('/').map(Number);
 
@@ -265,7 +265,7 @@ class GerenciaConsulta {
     }
   }
 
-  calcularTempoConsulta(horaInicial, horaFinal) {
+  async calcularTempoConsulta(horaInicial, horaFinal) {
     const [horasIni, minutosIni] = horaInicial.match(/.{1,2}/g).map(Number);
     const [horasFim, minutosFim] = horaFinal.match(/.{1,2}/g).map(Number);
 
@@ -277,13 +277,13 @@ class GerenciaConsulta {
     return `${horasConsulta.toString().padStart(2, '0')}:${minutosRestantes.toString().padStart(2, '0')}`;
   }
 
-  stringParaData(dataString) {
+  async stringParaData(dataString) {
     const [dia, mes, ano] = dataString.split('/').map(Number);
     // Converte string de data para um objeto Date
     return new Date(ano, mes - 1, dia);
   }
 
-  stringParaHora(horaString) {
+  async stringParaHora(horaString) {
     const [horas, minutos] = horaString.match(/.{1,2}/g).map(Number);
     // Converte a string de hora para um valor numérico representando o tempo em milissegundos
     // Inicio em 1º de janeiro de 1970

@@ -38,7 +38,7 @@ class GerenciaPaciente {
     dataNascimento = prompt('Data de Nascimento (DD/MM/AAAA): ');
     
     // Formata a data de nascimento
-    dataNascimentoFormatada = this.formatarData(dataNascimento);
+    const dataNascimentoFormatada = await this.formatarData(dataNascimento);
     
     // Verifica se a data de nascimento é válida
     if (!dataNascimentoFormatada) {
@@ -52,7 +52,7 @@ class GerenciaPaciente {
       const novoPaciente = await this.Paciente.create({
         cpf,
         nome,
-        dataNascimento,
+        dataNascimento: dataNascimentoFormatada, // Salva a data formatada no banco de dados
       });
       console.log('Paciente cadastrado com sucesso!\n');
       this.menuCadastroPacientes();
@@ -124,55 +124,74 @@ class GerenciaPaciente {
     }
   };
 
-  validarCPF(cpf) {
-  // Verificar se possui 11 dígitos
-  if (cpf.length !== 11) {
-    return false;
+  async validarCPF(cpf) {
+    // Verificar se possui 11 dígitos
+    if (cpf.length !== 11) {
+      return false;
+    }
+
+    // Verificar se todos os dígitos são iguais
+    if (/^(\d)\1*$/.test(cpf)) {
+      return false;
+    }
+
+    // Calcular o primeiro dígito verificador (J)
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+      soma += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let j = 11 - (soma % 11);
+    if (j === 10 || j === 11) {
+      j = 0;
+    }
+    if (j !== parseInt(cpf.charAt(9))) {
+      return false;
+    }
+
+    // Calcular o segundo dígito verificador (K)
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+      soma += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    let k = 11 - (soma % 11);
+    if (k === 10 || k === 11) {
+      k = 0;
+    }
+    if (k !== parseInt(cpf.charAt(10))) {
+      return false;
+    }
+
+    return true;
   }
 
-  // Verificar se todos os dígitos são iguais
-  if (/^(\d)\1*$/.test(cpf)) {
-    return false;
+  async formatarData(data) {
+    // Verifica se a data possui o formato DD/MM/AAAA
+    const dataRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    if (!dataRegex.test(data)) {
+      console.log('Formato de data inválido. Use o formato DD/MM/AAAA.');
+      return null;
+    }
+
+    const [, dia, mes, ano] = data.match(dataRegex);
+    const dataFormatada = new Date(`${ano}-${mes}-${dia}`);
+
+    if (isNaN(dataFormatada.getTime())) {
+      console.log('Data de nascimento inválida. Por favor, insira uma data válida.');
+      return null;
+    }
+
+    return dataFormatada;
   }
 
-  // Calcular o primeiro dígito verificador (J)
-  let soma = 0;
-  for (let i = 0; i < 9; i++) {
-    soma += parseInt(cpf.charAt(i)) * (10 - i);
-  }
-  let j = 11 - (soma % 11);
-  if (j === 10 || j === 11) {
-    j = 0;
-  }
-  if (j !== parseInt(cpf.charAt(9))) {
-    return false;
-  }
-
-  // Calcular o segundo dígito verificador (K)
-  soma = 0;
-  for (let i = 0; i < 10; i++) {
-    soma += parseInt(cpf.charAt(i)) * (11 - i);
-  }
-  let k = 11 - (soma % 11);
-  if (k === 10 || k === 11) {
-    k = 0;
-  }
-  if (k !== parseInt(cpf.charAt(10))) {
-    return false;
-  }
-
-  return true;
-  }
-
-  pacienteJaCadastrado(cpf) {
+  async pacienteJaCadastrado(cpf) {
     return this.pacientes.some((paciente) => paciente.cpf === cpf);
   }
 
-  encontrarPaciente(cpf) {
+  async encontrarPaciente(cpf) {
     return this.pacientes.find((paciente) => paciente.cpf === cpf);
   }
 
-  calcularIdade(dataNascimento) {
+  async calcularIdade(dataNascimento) {
     const [diaNasc, mesNasc, anoNasc] = dataNascimento.split('/').map(Number);
     const dataAtual = new Date();
     const anoAtual = dataAtual.getFullYear();

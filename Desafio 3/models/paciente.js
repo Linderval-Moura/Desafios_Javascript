@@ -12,7 +12,7 @@ const Paciente = sequelize.define('Paciente', {
     allowNull: false,
   },
   dataNascimento: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });
